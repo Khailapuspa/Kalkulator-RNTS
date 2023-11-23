@@ -3,12 +3,22 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const Calculator = () => {
   const [input, setInput] = useState("0");
+  const [textInputm, setTextInput] = useState("0");
 
   const handlePress = (value: string) => {
     if (value === "C") {
       setInput("0");
+      setTextInput("0");
     } else {
       setInput(input === "0" ? value : input + value);
+
+      if (value === "*") {
+        setTextInput(textInputm === "0" ? value : textInputm + "x");
+      } else if (value === "/") {
+        setTextInput(textInputm === "0" ? value : textInputm + ":");
+      } else {
+        setTextInput(textInputm === "0" ? value : textInputm + value);
+      }
     }
   };
 
@@ -17,7 +27,8 @@ const Calculator = () => {
   // };
 
   const handleDelete = () => {
-    setInput(prevInput => prevInput.slice(0, -1)); // Menghapus karakter terakhir dari input
+    setInput(prevInput => prevInput.slice(0, -1));
+    setTextInput(prevInput => prevInput.slice(0, -1)); // Menghapus karakter terakhir dari input
   };
 
   const handlePercentage = () => {
@@ -28,23 +39,29 @@ const Calculator = () => {
     // Pastikan tidak ada lebih dari satu titik desimal dalam input
     if (!input.includes('.')) {
       setInput(prevInput => prevInput + '.');
+      setTextInput(prevInput => prevInput + '.');
     }
   };
 
   const handleCalculate = () => {
     try {
-      const result = eval(input); 
+      const result = eval(input);
       setInput(result.toString());
+      setTextInput(result.toString());
     } catch (error) {
-      setInput('Error');
+      setInput('0');
+      setTextInput('Error');
+      setTimeout(() => {
+        setTextInput('');
+      }, 3000);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textinput}>{input}</Text>
+      <Text style={styles.textinput}>{textInputm}</Text>
       <View style={styles.row}>
-      <TouchableOpacity
+        <TouchableOpacity
           style={[styles.button, styles.doubleButton]}
           onPress={() => handlePress('C')}
         >
@@ -66,71 +83,71 @@ const Calculator = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("/")}>
-            <Text>{input === "/" ? "÷" : input}</Text>
-          </TouchableOpacity>
+          style={styles.button}
+          onPress={() => handlePress("/")}>
+          <Text>{input === "/" ? "÷" : input}</Text>
+        </TouchableOpacity>
         {/* Add more number buttons similarly */}
       </View>
 
       <View style={styles.row}>
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('7')}
-            >
-            <Text style={styles.input}>7</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('8')}
-            >
-            <Text style={styles.input}>8</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('9')}
-            >
-            <Text style={styles.input}>9</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress("*")}>
-            <Text>{ "*" ? "×" : input} x</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.row}>
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('4')}
-            >
-            <Text style={styles.input}>4</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('5')}
-            >
-            <Text style={styles.input}>5</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('6')}
-            >
-            <Text style={styles.input}>6</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={styles.button}
-            onPress={() => handlePress('-')}
-            >
-            <Text style={styles.input}>-</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('7')}
+        >
+          <Text style={styles.input}>7</Text>
         </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('8')}
+        >
+          <Text style={styles.input}>8</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('9')}
+        >
+          <Text style={styles.input}>9</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress("*")}>
+          <Text>{"*" ? "×" : input} x</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('4')}
+        >
+          <Text style={styles.input}>4</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('5')}
+        >
+          <Text style={styles.input}>5</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('6')}
+        >
+          <Text style={styles.input}>6</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handlePress('-')}
+        >
+          <Text style={styles.input}>-</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.row}>
         <TouchableOpacity
@@ -164,7 +181,7 @@ const Calculator = () => {
       </View>
 
       <View style={styles.row}>
-      <TouchableOpacity
+        <TouchableOpacity
           style={styles.button}
           onPress={handlePercentage} //BELOM JALAN YA
         >
@@ -231,9 +248,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   textinput: {
-      fontSize: 48,
-      color: "#fff",
-      textAlign: "right",
+    fontSize: 48,
+    color: "#fff",
+    textAlign: "right",
   },
   // input2: {
   //   font
